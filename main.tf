@@ -26,7 +26,7 @@ resource "spacelift_run" "this" {
 }
 
 locals {
-  stacks = [for i in range(1, 500) : {
+  stacks2 = [for i in range(1, 500) : {
     name        = "Other Cluster ${i}"
     description = "Provisions a Kubernetes cluster"
     branch      = "master"
@@ -42,7 +42,7 @@ resource "spacelift_stack" "different_cluster" {
   repository       = each.value.repository
 }
 
-resource "spacelift_run" "this" {
+resource "spacelift_run" "other" {
   for_each = { for idx, stack in local.stacks : idx => stack }
 
   stack_id = spacelift_stack.different_cluster[each.key].id
