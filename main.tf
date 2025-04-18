@@ -1,11 +1,12 @@
 locals {
-  stacks = [for i in range(1, 121) : {
-    name        = "Kubernetes Cluster ${i}"
-    description = "Provisions a Kubernetes cluster"
-    branch      = "master"
-    repository  = "addressbook"
-    worker_pool_id = "01HNK02PZAPP4YFH4C0JE2J8Y4"
-  }]
+  stacks = [
+    for i in range(1, 1001) : {
+      name           = "${i <= 500 ? "First" : "Second"} Kubernetes Cluster ${i}"
+      description    = "Provisions a Kubernetes cluster"
+      branch         = "master"
+      repository     = "addressbook"
+    }
+  ]
 }
 
 resource "spacelift_stack" "k8s_cluster" {
@@ -14,7 +15,6 @@ resource "spacelift_stack" "k8s_cluster" {
   description      = each.value.description
   branch           = each.value.branch
   repository       = each.value.repository
-  worker_pool_id   = each.value.worker_pool_id
 }
 
 resource "spacelift_run" "this" {
@@ -25,4 +25,6 @@ resource "spacelift_run" "this" {
   keepers = {
     branch = spacelift_stack.k8s_cluster[each.key].branch
   }
+
+  depends_on = [spacelift_stack.k8s_cluster]
 }
