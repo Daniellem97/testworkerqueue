@@ -25,3 +25,4 @@ resource "spacelift_run" "this" {
   keepers = {
     branch = spacelift_stack.k8s_cluster[each.key].branch
   }
+}
